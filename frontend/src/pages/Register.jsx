@@ -1,74 +1,63 @@
 import { useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { registerUser } from "../redux/slices/authSlice";
-import { Navigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 
-function Register() {
+export default function Register() {
   const dispatch = useDispatch();
-  const { user, loading, error } = useSelector((state) => state.auth);
-
-  const [form, setForm] = useState({
-    name: "",
-    email: "",
-    password: "",
-  });
-
-  if (user) return <Navigate to="/gigs" />;
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    dispatch(registerUser(form));
-  };
+  const [form, setForm] = useState({});
 
   return (
-    <div className="min-h-screen flex items-center justify-center">
-      <form
-        onSubmit={handleSubmit}
-        className="bg-white p-6 rounded shadow w-80 space-y-4"
-      >
-        <h2 className="text-xl font-bold">Register</h2>
+    <div className="min-h-screen flex items-center justify-center bg-slate-50">
+      <div className="bg-white p-8 rounded-lg shadow w-full max-w-md">
+        <h1 className="text-2xl font-semibold mb-6 text-center">
+          Create Account
+        </h1>
 
-        <input
-          className="w-full border p-2"
-          placeholder="Name"
-          value={form.name}
-          onChange={(e) =>
-            setForm({ ...form, name: e.target.value })
-          }
-        />
-
-        <input
-          className="w-full border p-2"
-          placeholder="Email"
-          value={form.email}
-          onChange={(e) =>
-            setForm({ ...form, email: e.target.value })
-          }
-        />
-
-        <input
-          type="password"
-          className="w-full border p-2"
-          placeholder="Password"
-          value={form.password}
-          onChange={(e) =>
-            setForm({ ...form, password: e.target.value })
-          }
-        />
-
-        <button
-          className="w-full bg-green-600 text-white py-2"
-          disabled={loading}
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            dispatch(registerUser(form));
+          }}
+          className="space-y-4"
         >
-          {loading ? "Creating..." : "Register"}
-        </button>
+          <input
+            placeholder="Name"
+            className="w-full border p-2 rounded"
+            onChange={(e) =>
+              setForm({ ...form, name: e.target.value })
+            }
+          />
 
-        {error && (
-          <p className="text-red-600 text-sm">{error}</p>
-        )}
-      </form>
+          <input
+            placeholder="Email"
+            className="w-full border p-2 rounded"
+            onChange={(e) =>
+              setForm({ ...form, email: e.target.value })
+            }
+          />
+
+          <input
+            placeholder="Password"
+            type="password"
+            className="w-full border p-2 rounded"
+            onChange={(e) =>
+              setForm({ ...form, password: e.target.value })
+            }
+          />
+
+          <button className="w-full bg-indigo-600 text-white py-2 rounded hover:bg-indigo-700">
+            Register
+          </button>
+        </form>
+
+        <p className="text-sm text-center mt-4">
+          Already have an account?{" "}
+          <Link to="/login" className="text-indigo-600">
+            Login
+          </Link>
+        </p>
+      </div>
     </div>
   );
 }
-
-export default Register;

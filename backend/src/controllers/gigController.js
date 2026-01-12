@@ -46,11 +46,23 @@ exports.getGigs = async (req, res) => {
   }
 };
 
+// exports.getGigById = async (req, res) => {
+//   const gig = await Gig.findById(req.params.id);
+//   if (!gig) {
+//     return res.status(404).json({ message: "Gig not found" });
+//   }
+//   res.json(gig);
+// };
+
 exports.getGigById = async (req, res) => {
-  const gig = await Gig.findById(req.params.id);
-  if (!gig) {
-    return res.status(404).json({ message: "Gig not found" });
+  try {
+    const gig = await Gig.findById(req.params.id);
+    if (!gig) {
+      return res.status(404).json({ message: "Gig not found" });
+    }
+    res.json(gig);
+  } catch {
+    res.status(400).json({ message: "Invalid ID" });
   }
-  res.json(gig);
 };
 

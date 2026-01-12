@@ -1,52 +1,77 @@
 import { useEffect, useState } from "react";
-import api from "../services/api";
 import { Link } from "react-router-dom";
+import api from "../services/api";
+
+import PageHeader from "../components/PageHeader";
+import GigCard from "../components/GigCard";
 
 export default function MyBids() {
   const [bids, setBids] = useState([]);
+  const [search, setSearch] = useState("");
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    api.get("/bids/my").then(res => setBids(res.data));
+    api
+      .get("/bids/my")
+      .then((res) => setBids(res.data))
+      .finally(() => setLoading(false));
   }, []);
 
+  // Apply search on gig title
+  const filteredBids = bids.filter((bid) =>
+    bid.gigId.title.toLowerCase().includes(search.toLowerCase())
+  );
+
   return (
-    <div className="p-6">
-      <h1 className="text-2xl font-bold mb-4">My Bids</h1>
+    <div className="space-y-6">
+      
+      {/* Page Header */}
+      <PageHeader
+        title="My Bids"
+        search={search}
+        onSearch={setSearch}
+      />
 
-      {bids.length === 0 && <p>No bids yet</p>}
+      {loading && (
+        <p className="text-gray-500">Loading your bids...</p>
+      )}
 
-      {bids.map(b => (
-        <div key={b._id} className="border p-4 mb-3 rounded">
-          <h2 className="font-semibold">{b.gigId.title}</h2>
-          <p>{b.gigId.description}</p>
-          <p>Budget: ₹{b.gigId.budget}</p>
+      {!loading && filteredBids.length === 0 && (
+        <p className="text-gray-500">You haven’t placed any bids yet</p>
+      )}
 
-          <p className="mt-2">
-            <strong>Your Price:</strong> ₹{b.price}
-          </p>
-          <p>
-            <strong>Status:</strong>{" "}
-            <span
-              className={
-                b.status === "hired"
-                  ? "text-green-600"
-                  : b.status === "rejected"
-                  ? "text-red-600"
-                  : "text-yellow-600"
-              }
-            >
-              {b.status}
-            </span>
-          </p>
-
+      <div className="grid gap-4">
+        {filteredBids.map((bid) => (
           <Link
-            to={`/gigs/${b.gigId._id}`}
-            className="text-blue-600 underline"
+            key={bid._id}
+            to={`/gigs/${bid.gigId._id}`}
+            className="block"
           >
-            View Gig
+            <GigCard
+              gig={bid.gigId}
+              footer={
+                <div className="flex items-center gap-3">
+                  <span className="text-sm text-gray-600">
+                    ₹{bid.price}
+                  </span>
+
+                  <span
+                    className={`px-2 py-1 rounded text-xs font-semibold capitalize ${
+                      bid.status === "hired"
+                        ? "bg-green-100 text-green-700"
+                        : bid.status === "rejected"
+                        ? "bg-red-100 text-red-700"
+                        : "bg-yellow-100 text-yellow-700"
+                    }`}
+                  >
+                    {bid.status}
+                  </span>
+                </div>
+              }
+            />
           </Link>
-        </div>
-      ))}
+        ))}
+      </div>
     </div>
   );
 }

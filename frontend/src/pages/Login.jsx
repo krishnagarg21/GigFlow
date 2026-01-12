@@ -1,64 +1,52 @@
 import { useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { loginUser } from "../redux/slices/authSlice";
-import { Navigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 
-function Login() {
+export default function Login() {
   const dispatch = useDispatch();
-  const { user, loading, error } = useSelector((state) => state.auth);
-
-  const [form, setForm] = useState({
-    email: "",
-    password: "",
-  });
-
-  if (user) return <Navigate to="/gigs" />;
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    dispatch(loginUser(form));
-  };
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
   return (
-    <div className="min-h-screen flex items-center justify-center">
-      <form
-        onSubmit={handleSubmit}
-        className="bg-white p-6 rounded shadow w-80 space-y-4"
-      >
-        <h2 className="text-xl font-bold">Login</h2>
+    <div className="min-h-screen flex items-center justify-center bg-slate-50">
+      <div className="bg-white p-8 rounded-lg shadow w-full max-w-md">
+        <h1 className="text-2xl font-semibold mb-6 text-center">
+          Login to GigFlow
+        </h1>
 
-        <input
-          className="w-full border p-2"
-          placeholder="Email"
-          value={form.email}
-          onChange={(e) =>
-            setForm({ ...form, email: e.target.value })
-          }
-        />
-
-        <input
-          type="password"
-          className="w-full border p-2"
-          placeholder="Password"
-          value={form.password}
-          onChange={(e) =>
-            setForm({ ...form, password: e.target.value })
-          }
-        />
-
-        <button
-          className="w-full bg-blue-600 text-white py-2"
-          disabled={loading}
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            dispatch(loginUser({ email, password }));
+          }}
+          className="space-y-4"
         >
-          {loading ? "Logging in..." : "Login"}
-        </button>
+          <input
+            placeholder="Email"
+            className="w-full border p-2 rounded"
+            onChange={(e) => setEmail(e.target.value)}
+          />
 
-        {error && (
-          <p className="text-red-600 text-sm">{error}</p>
-        )}
-      </form>
+          <input
+            placeholder="Password"
+            type="password"
+            className="w-full border p-2 rounded"
+            onChange={(e) => setPassword(e.target.value)}
+          />
+
+          <button className="w-full bg-indigo-600 text-white py-2 rounded hover:bg-indigo-700">
+            Login
+          </button>
+        </form>
+
+        <p className="text-sm text-center mt-4">
+          Don’t have an account?{" "}
+          <Link to="/register" className="text-indigo-600">
+            Register
+          </Link>
+        </p>
+      </div>
     </div>
   );
 }
-
-export default Login;

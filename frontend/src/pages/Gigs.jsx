@@ -1,11 +1,14 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchGigs } from "../redux/slices/gigSlice";
-import { logout } from "../redux/slices/authSlice";
 import { Link } from "react-router-dom";
+import GigCard from "../components/GigCard";
+import PageHeader from "../components/PageHeader";
 
 function Gigs() {
   const dispatch = useDispatch();
+  const [search, setSearch] = useState("");
+
   const { list, loading } = useSelector((state) => state.gigs);
   const { user } = useSelector((state) => state.auth);
 
@@ -13,52 +16,42 @@ function Gigs() {
     dispatch(fetchGigs());
   }, [dispatch]);
 
+  // 1️⃣ Only gigs NOT created by current user
   const openGigs = list.filter(
-    (g) => g.ownerId !== user?.id
+    (gig) => gig.ownerId !== user?.id
   );
 
+  // 2️⃣ Apply search on open gigs
+  const filteredGigs = openGigs.filter((gig) =>
+    gig.title.toLowerCase().includes(search.toLowerCase())
+  );
 
   return (
-    <div className="min-h-screen p-6 bg-gray-100">
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold">Open Gigs</h1>
-        <Link to="/create-gig" className="bg-green-600 text-white px-4 py-2 rounded">
-          Create Gig
-        </Link>
+    <div className="space-y-6">
+      
+      {/* Page Header */}
+      <PageHeader
+        title="Open Gigs"
+        search={search}
+        onSearch={setSearch}
+      />
 
-        <button
-          onClick={() => dispatch(logout())}
-          className="bg-red-600 text-white px-4 py-2 rounded"
-        >
-          Logout
-        </button>
-      </div>
-
-      {loading && <p>Loading gigs...</p>}
+      {loading && <p className="text-gray-500">Loading gigs...</p>}
 
       <div className="grid gap-4">
-        {openGigs.map((gig) => (
-          <Link to={`/gigs/${gig._id}`} className="block">
-            <div
-              key={gig._id}
-              className="bg-white p-4 rounded shadow"
-            >
-              <h2 className="text-lg font-semibold">
-                {gig.title}
-              </h2>
-              <p className="text-gray-600">
-                {gig.description}
-              </p>
-              <p className="font-bold mt-2">
-                ₹{gig.budget}
-              </p>
-            </div>
+        {!loading && filteredGigs.length === 0 && (
+          <p className="text-gray-500">No gigs found</p>
+        )}
+
+        {filteredGigs.map((gig) => (
+          <Link
+            key={gig._id}
+            to={`/gigs/${gig._id}`}
+            className="block"
+          >
+            <GigCard gig={gig} />
           </Link>
         ))}
-
-        {!loading && list.length === 0 && (
-          <p>No gigs available</p>
-        )}
       </div>
     </div>
   );

@@ -11,6 +11,7 @@ import GigDetail from "./pages/GigDetail";
 import Navbar from "./components/Navbar";
 import MyGigs from "./pages/MyGigs";
 import MyBids from "./pages/MyBids";
+import AppLayout from "./components/AppLayout";
 
 
 function App() {
@@ -30,33 +31,41 @@ function App() {
   }
 
 
+  <div className="bg-red-500 text-white p-10 text-3xl">
+    TAILWIND TEST
+  </div>
+
+
+
   return (
     <>
       <Navbar/>
       
-      <Routes>
-        <Route
-          path="/login"
-          element={user ? <Navigate to="/gigs" /> : <Login />}
-        />
+      <AppLayout>
+        <Routes>
+          <Route
+            path="/login"
+            element={user ? <Navigate to="/gigs" /> : <Login />}
+          />
 
-        <Route
-          path="/register"
-          element={user ? <Navigate to="/gigs" /> : <Register />}
-        />
-        <Route
-          path="/gigs"
-          element={user ? <Gigs /> : <Navigate to="/login" />}
-        />
-        <Route path="/create-gig" element={user ? <CreateGig /> : <Navigate to="/login" />} />
-        <Route path="/gigs/:id" element={user ? <GigDetail /> : <Navigate to="/login" />} />
-        <Route path="/my-gigs" element={<MyGigs />} />
-        <Route path="/my-bids" element={user ? <MyBids /> : <Navigate to="/login" />} />
-        <Route
-          path="*"
-          element={<Navigate to={user ? "/gigs" : "/login"} />}
-        />
-      </Routes>
+          <Route
+            path="/register"
+            element={user ? <Navigate to="/gigs" /> : <Register />}
+          />
+          <Route
+            path="/gigs"
+            element={user ? <Gigs /> : <Navigate to="/login" />}
+          />
+          <Route path="/create-gig" element={user ? <CreateGig /> : <Navigate to="/login" />} />
+          <Route path="/gigs/:id" element={user ? <GigDetail /> : <Navigate to="/login" />} />
+          <Route path="/my-gigs" element={<MyGigs />} />
+          <Route path="/my-bids" element={user ? <MyBids /> : <Navigate to="/login" />} />
+          <Route
+            path="*"
+            element={<Navigate to={user ? "/gigs" : "/login"} />}
+          />
+        </Routes>
+      </AppLayout>
     </>
   );
 }
