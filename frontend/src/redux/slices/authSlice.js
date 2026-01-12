@@ -100,6 +100,7 @@ const authSlice = createSlice({
       .addCase(logoutUser.fulfilled, (state) => {
         state.user = null;
       });
+    
   },
 });
 
