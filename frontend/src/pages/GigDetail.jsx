@@ -8,6 +8,7 @@ export default function GigDetail() {
   const { user } = useSelector((state) => state.auth);
 
   const [gig, setGig] = useState(null);
+  const [myBid, setMyBid] = useState(null);
   const [bids, setBids] = useState([]);
   const [bidForm, setBidForm] = useState({ message: "", price: "" });
   const [error, setError] = useState("");
@@ -20,11 +21,18 @@ export default function GigDetail() {
         setGig(gigRes.data);
 
         // ✅ SAME OWNER-ONLY BIDS FETCH
-        try {
+        // OWNER: fetch all bids
+        if (gigRes.data.ownerId === user.id) {
           const bidsRes = await api.get(`/bids/${id}`);
           setBids(bidsRes.data);
-        } catch {
-          // ignore for non-owner
+        } 
+        // FREELANCER: fetch my bid only
+        else {
+          const myBidsRes = await api.get("/bids/my");
+          const bid = myBidsRes.data.find(
+            (b) => b.gigId._id === id
+          );
+          setMyBid(bid || null);
         }
       } catch (err) {
         console.error("Failed to load gig", err);
@@ -62,9 +70,6 @@ export default function GigDetail() {
   }
 
   const isOwner = gig.ownerId === user.id;
-  const myBid = bids.find(
-    (b) => b.freelancerId._id === user.id
-  );
 
   return (
     <div className="space-y-8">
@@ -144,25 +149,48 @@ export default function GigDetail() {
       )}
 
       {!isOwner && myBid && (
-        <div className="border p-4 rounded mt-4 max-w-md">
-          <h2 className="font-semibold mb-1">Your Bid</h2>
+        <div className="bg-white border border-slate-200 rounded-lg p-6 max-w-md shadow-sm">
+          
+          <div className="flex justify-between items-center mb-3">
+            <h2 className="text-lg font-semibold text-slate-800">
+              Your Bid
+            </h2>
 
-          <p>
-            <strong>Message:</strong> {myBid.message}
-          </p>
-
-          <p className="mt-1">
-            <strong>Price:</strong> ₹{myBid.price}
-          </p>
-
-          <p className="mt-2 text-sm">
-            <strong>Status:</strong>{" "}
-            <span className="capitalize font-semibold">
+            <span
+              className={`px-3 py-1 rounded-full text-xs font-semibold capitalize ${
+                myBid.status === "hired"
+                  ? "bg-green-100 text-green-700"
+                  : myBid.status === "rejected"
+                  ? "bg-red-100 text-red-700"
+                  : "bg-yellow-100 text-yellow-700"
+              }`}
+            >
               {myBid.status}
             </span>
-          </p>
+          </div>
+
+          <div className="space-y-3">
+            <div>
+              <p className="text-xs uppercase tracking-wide text-slate-500">
+                Message
+              </p>
+              <p className="text-slate-700">
+                {myBid.message}
+              </p>
+            </div>
+
+            <div>
+              <p className="text-xs uppercase tracking-wide text-slate-500">
+                Your Price
+              </p>
+              <p className="text-xl font-semibold text-slate-900">
+                ₹{myBid.price}
+              </p>
+            </div>
+          </div>
         </div>
       )}
+
 
       {/* BIDS LIST — OWNER ONLY */}
       {isOwner && (

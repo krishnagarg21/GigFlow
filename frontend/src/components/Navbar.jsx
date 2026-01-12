@@ -13,19 +13,28 @@ export default function Navbar() {
 
   if (!user) return null;
 
-  const navItem = (path, label) => (
-    <Link
-      to={path}
-      className={`px-3 py-2 rounded-md text-sm font-medium transition
-        ${
-          location.pathname.startsWith(path)
-            ? "bg-slate-900 text-white"
-            : "text-slate-300 hover:text-white hover:bg-slate-700"
-        }`}
-    >
-      {label}
-    </Link>
-  );
+  const isOpenGigs = () => 
+    location.pathname === "/gigs";
+
+  const isMyGigs = () =>
+    location.pathname.startsWith("/my-gigs");
+
+  const isMyBids = () =>
+    location.pathname.startsWith("/my-bids");
+
+  // const navItem = (path, label) => (
+  //   <Link
+  //     to={path}
+  //     className={`px-3 py-2 rounded-md text-sm font-medium transition
+  //       ${
+  //         location.pathname.startsWith(path)
+  //           ? "bg-slate-900 text-white"
+  //           : "text-slate-300 hover:text-white hover:bg-slate-700"
+  //       }`}
+  //   >
+  //     {label}
+  //   </Link>
+  // );
 
   return (
     <nav className="bg-slate-800 border-b border-slate-700">
@@ -38,10 +47,58 @@ export default function Navbar() {
               GigFlow
             </span>
 
-            {navItem("/gigs", "Open Gigs")}
+            <Link
+              to="/gigs"
+              className={`px-3 py-2 rounded ${
+                isOpenGigs()
+                  ? "bg-indigo-600 text-white"
+                  : "text-gray-300 hover:text-white"
+              }`}
+            >
+              Open Gigs
+            </Link>
+
+            <Link
+              to="/my-gigs"
+              className={`px-3 py-2 rounded ${
+                isMyGigs()
+                  ? "bg-indigo-600 text-white"
+                  : "text-gray-300 hover:text-white"
+              }`}
+            >
+              My Gigs
+            </Link>
+
+            <Link
+              to="/my-bids"
+              className={`px-3 py-2 rounded ${
+                isMyBids()
+                  ? "bg-indigo-600 text-white"
+                  : "text-gray-300 hover:text-white"
+              }`}
+            >
+              My Bids
+            </Link>
+
+            <Link
+              to="/create-gig"
+              className={`px-3 py-2 rounded ${
+                location.pathname === "/create-gig"
+                  ? "bg-indigo-600 text-white"
+                  : "text-gray-300 hover:text-white"
+              }`}
+            >
+              Create Gig
+            </Link>
+
+
+
+
+
+            {/* {navItem("/gigs", "Open Gigs")}
             {navItem("/my-gigs", "My Gigs")}
             {navItem("/my-bids", "My Bids")}
-            {navItem("/create-gig", "Create Gig")}
+            {navItem("/create-gig", "Create Gig")} */}
           </div>
 
           {/* RIGHT: User dropdown */}
