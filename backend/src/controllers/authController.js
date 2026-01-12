@@ -31,11 +31,14 @@ exports.register = async (req, res) => {
 
     const token = generateToken(user._id);
 
+    const cookieOptions = {
+      httpOnly: true,
+      secure: true,      // MUST for HTTPS
+      sameSite: "none",  // MUST for cross-domain
+    };
+
     res
-      .cookie("token", token, {
-        httpOnly: true,
-        sameSite: "lax",
-      })
+      .cookie("token", token, cookieOptions)
       .status(201)
       .json({
         message: "User registered successfully",
@@ -67,18 +70,15 @@ exports.login = async (req, res) => {
     const token = generateToken(user._id);
 
     res
-      .cookie("token", token, {
-        httpOnly: true,
-        sameSite: "lax",
-      })
-      .json({
-        message: "Login successful",
-        user: {
-          id: user._id,
-          name: user.name,
-          email: user.email,
-        },
-      });
+    .cookie("token", token, cookieOptions)
+    .json({
+      message: "Login successful",
+      user: {
+        id: user._id,
+        name: user.name,
+        email: user.email,
+      },
+    });
   } catch (error) {
     res.status(500).json({ message: "Server error" });
   }
@@ -94,11 +94,7 @@ exports.getMe = async (req, res) => {
 };
 
 exports.logout = (req, res) => {
-  res.clearCookie("token", {
-    httpOnly: true,
-    sameSite: "lax",
-  });
-
+  res.clearCookie("token", cookieOptions);
   res.json({ message: "Logged out successfully" });
 };
 
