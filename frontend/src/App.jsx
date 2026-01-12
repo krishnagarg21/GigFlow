@@ -2,6 +2,9 @@ import { Routes, Route, Navigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { useEffect } from "react";
 import { fetchMe } from "./redux/slices/authSlice";
+import { socket } from "./services/socket";
+import { Toaster, toast } from "react-hot-toast";
+
 
 import Login from "./pages/Login";
 import Register from "./pages/Register";
@@ -13,7 +16,6 @@ import MyGigs from "./pages/MyGigs";
 import MyBids from "./pages/MyBids";
 import AppLayout from "./components/AppLayout";
 
-
 function App() {
   const { user, isAuthChecked } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
@@ -21,6 +23,28 @@ function App() {
     dispatch(fetchMe());
   }, [dispatch]);
 
+  useEffect(() => {
+    if (user) {
+      socket.connect();
+      socket.emit("register", user.id);
+    }
+
+    return () => {
+      socket.disconnect();
+    };
+  }, [user]);
+
+  useEffect(() => {
+    socket.on("hired", ({ gigTitle }) => {
+      toast.success(`You have been hired for "${gigTitle}"`, {
+        duration: 5000,
+      });
+    });
+
+    return () => {
+      socket.off("hired");
+    };
+  }, []);
 
   if (!isAuthChecked) {
     return (
@@ -30,17 +54,11 @@ function App() {
     );
   }
 
-
-  <div className="bg-red-500 text-white p-10 text-3xl">
-    TAILWIND TEST
-  </div>
-
-
-
   return (
     <>
-      <Navbar/>
-      
+      <Toaster position="top-right" reverseOrder={false} />
+      <Navbar />
+
       <AppLayout>
         <Routes>
           <Route
@@ -56,10 +74,19 @@ function App() {
             path="/gigs"
             element={user ? <Gigs /> : <Navigate to="/login" />}
           />
-          <Route path="/create-gig" element={user ? <CreateGig /> : <Navigate to="/login" />} />
-          <Route path="/gigs/:id" element={user ? <GigDetail /> : <Navigate to="/login" />} />
+          <Route
+            path="/create-gig"
+            element={user ? <CreateGig /> : <Navigate to="/login" />}
+          />
+          <Route
+            path="/gigs/:id"
+            element={user ? <GigDetail /> : <Navigate to="/login" />}
+          />
           <Route path="/my-gigs" element={<MyGigs />} />
-          <Route path="/my-bids" element={user ? <MyBids /> : <Navigate to="/login" />} />
+          <Route
+            path="/my-bids"
+            element={user ? <MyBids /> : <Navigate to="/login" />}
+          />
           <Route
             path="*"
             element={<Navigate to={user ? "/gigs" : "/login"} />}

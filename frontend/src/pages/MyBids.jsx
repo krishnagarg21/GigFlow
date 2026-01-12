@@ -4,11 +4,17 @@ import api from "../services/api";
 
 import PageHeader from "../components/PageHeader";
 import GigCard from "../components/GigCard";
+import { useSelector } from "react-redux";
 
 export default function MyBids() {
   const [bids, setBids] = useState([]);
   const [search, setSearch] = useState("");
   const [loading, setLoading] = useState(true);
+
+  const { isAuthChecked } = useSelector(
+  (state) => state.auth
+);
+
 
   useEffect(() => {
     api
@@ -16,6 +22,10 @@ export default function MyBids() {
       .then((res) => setBids(res.data))
       .finally(() => setLoading(false));
   }, []);
+
+  if (!isAuthChecked) {
+    return <p className="p-6">Loading...</p>;
+  }
 
   // Apply search on gig title
   const filteredBids = bids.filter((bid) =>

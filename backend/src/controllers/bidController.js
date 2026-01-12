@@ -1,6 +1,8 @@
 const Bid = require("../models/Bid");
 const Gig = require("../models/Gig");
 const mongoose = require("mongoose");
+const { notifyUser } = require("../socket");
+
 
 // Submit a bid
 exports.createBid = async (req, res) => {
@@ -94,6 +96,11 @@ exports.hireBid = async (req, res) => {
 
     await session.commitTransaction();
     session.endSession();
+
+    notifyUser(bid.freelancerId.toString(), {
+      gigTitle: gig.title,
+    });
+
 
     res.json({ message: "Freelancer hired successfully" });
   } catch (error) {

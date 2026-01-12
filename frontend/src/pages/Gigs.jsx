@@ -4,22 +4,28 @@ import { fetchGigs } from "../redux/slices/gigSlice";
 import { Link } from "react-router-dom";
 import GigCard from "../components/GigCard";
 import PageHeader from "../components/PageHeader";
+import { getOwnerId } from "../utils/getOwnerId";
 
 function Gigs() {
   const dispatch = useDispatch();
   const [search, setSearch] = useState("");
 
   const { list, loading } = useSelector((state) => state.gigs);
-  const { user } = useSelector((state) => state.auth);
+  const { user, isAuthChecked  } = useSelector((state) => state.auth);
 
   useEffect(() => {
     dispatch(fetchGigs());
   }, [dispatch]);
 
+  if (!isAuthChecked) {
+    return <p className="p-6">Loading...</p>;
+  }
+
   // 1️⃣ Only gigs NOT created by current user
   const openGigs = list.filter(
-    (gig) => gig.ownerId !== user?.id
+    (g) => getOwnerId(g.ownerId) !== user.id
   );
+
 
   // 2️⃣ Apply search on open gigs
   const filteredGigs = openGigs.filter((gig) =>

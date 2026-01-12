@@ -2,6 +2,9 @@ const express = require("express");
 const dotenv = require("dotenv");
 const cookieParser = require("cookie-parser");
 const cors = require("cors");
+const http = require("http");
+const { initSocket } = require("./socket");
+
 
 const connectDB = require("./config/db");
 
@@ -37,6 +40,12 @@ app.get("/", (req, res) => {
 });
 
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () =>
-  console.log(`Server running on port ${PORT}`)
-);
+
+const server = http.createServer(app);
+
+// initialize socket.io
+initSocket(server);
+
+server.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
+});

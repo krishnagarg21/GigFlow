@@ -2,10 +2,11 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
 import api from "../services/api";
+import { getOwnerId } from "../utils/getOwnerId";
 
 export default function GigDetail() {
   const { id } = useParams();
-  const { user } = useSelector((state) => state.auth);
+  const { user, isAuthChecked } = useSelector((state) => state.auth);
 
   const [gig, setGig] = useState(null);
   const [myBid, setMyBid] = useState(null);
@@ -65,11 +66,15 @@ export default function GigDetail() {
     alert("Freelancer hired");
   };
 
+  if (!isAuthChecked) {
+    return <p className="p-6">Loading...</p>;
+  }
+
   if (!gig) {
     return <p className="p-6 text-gray-500">Loading...</p>;
   }
 
-  const isOwner = gig.ownerId === user.id;
+  const isOwner = getOwnerId(gig.ownerId) === user.id;
 
   return (
     <div className="space-y-8">
