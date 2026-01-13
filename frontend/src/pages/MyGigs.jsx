@@ -10,20 +10,20 @@ export default function MyGigs() {
   const [gigs, setGigs] = useState([]);
   const [search, setSearch] = useState("");
   const [loading, setLoading] = useState(true);
-  const { isAuthChecked } = useSelector(
-    (state) => state.auth
-  );
-
-  
+  const { isAuthChecked } = useSelector((state) => state.auth);
 
   useEffect(() => {
-    api.get("/gigs/my")
+    if (!isAuthChecked) return;
+
+    api
+      .get("/api/gigs/my", { withCredentials: true })
       .then((res) => setGigs(res.data))
+      .catch((err) => console.error(err))
       .finally(() => setLoading(false));
-  }, []);
+  }, [isAuthChecked]);
 
   if (!isAuthChecked) {
-    return <p className="p-6">Loading...</p>; 
+    return <p className="p-6">Loading...</p>;
   }
 
   // Apply search
@@ -33,17 +33,10 @@ export default function MyGigs() {
 
   return (
     <div className="space-y-6">
-      
       {/* Page Header */}
-      <PageHeader
-        title="My Gigs"
-        search={search}
-        onSearch={setSearch}
-      />
+      <PageHeader title="My Gigs" search={search} onSearch={setSearch} />
 
-      {loading && (
-        <p className="text-gray-500">Loading your gigs...</p>
-      )}
+      {loading && <p className="text-gray-500">Loading your gigs...</p>}
 
       {!loading && filteredGigs.length === 0 && (
         <p className="text-gray-500">You haven’t created any gigs yet</p>
@@ -51,11 +44,7 @@ export default function MyGigs() {
 
       <div className="grid gap-4">
         {filteredGigs.map((gig) => (
-          <Link
-            key={gig._id}
-            to={`/gigs/${gig._id}`}
-            className="block"
-          >
+          <Link key={gig._id} to={`/gigs/${gig._id}`} className="block">
             <GigCard
               gig={gig}
               footer={

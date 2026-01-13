@@ -19,7 +19,7 @@ export const createGig = createAsyncThunk(
   "gigs/create",
   async (gigData, thunkAPI) => {
     try {
-      const res = await api.post("/api/gigs", gigData);
+      const res = await api.post("/api/gigs", gigData, { withCredentials: true });
       return res.data;
     } catch {
       return thunkAPI.rejectWithValue("Failed to create gig");

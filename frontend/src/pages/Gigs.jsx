@@ -22,9 +22,9 @@ function Gigs() {
   }
 
   // 1️⃣ Only gigs NOT created by current user
-  const openGigs = list.filter(
-    (g) => getOwnerId(g.ownerId) !== user.id
-  );
+  const openGigs = user
+  ? list.filter((g) => getOwnerId(g.ownerId) !== user.id)
+  : [];
 
 
   // 2️⃣ Apply search on open gigs

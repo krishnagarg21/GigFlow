@@ -5,7 +5,6 @@ import { fetchMe } from "./redux/slices/authSlice";
 import { socket } from "./services/socket";
 import { Toaster, toast } from "react-hot-toast";
 
-
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Gigs from "./pages/Gigs";
@@ -82,7 +81,10 @@ function App() {
             path="/gigs/:id"
             element={user ? <GigDetail /> : <Navigate to="/login" />}
           />
-          <Route path="/my-gigs" element={<MyGigs />} />
+          <Route
+            path="/my-gigs"
+            element={user ? <MyGigs /> : <Navigate to="/login" />}
+          />
           <Route
             path="/my-bids"
             element={user ? <MyBids /> : <Navigate to="/login" />}
