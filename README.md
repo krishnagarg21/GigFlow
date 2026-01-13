@@ -81,7 +81,36 @@ This project is built as part of a full-stack developer assignment and implement
 
 ---
 
-## 🛠️ Environment Variables
+## � Project Structure
+
+```
+gigflow/
+├── backend/
+│   ├── src/
+│   │   ├── config/
+│   │   ├── controllers/
+│   │   ├── middleware/
+│   │   ├── models/
+│   │   ├── routes/
+│   │   ├── index.js
+│   │   └── socket.js
+│   ├── package.json
+│   └── .env.example
+├── frontend/
+│   ├── src/
+│   │   ├── components/
+│   │   ├── pages/
+│   │   ├── redux/
+│   │   ├── services/
+│   │   └── utils/
+│   ├── package.json
+│   └── vite.config.js
+└── README.md
+```
+
+---
+
+## �🛠️ Environment Variables
 
 ### Backend (`backend/.env`)
 ```env
@@ -96,6 +125,16 @@ VITE_API_URL=http://localhost:5000/api
 ```
 
 ⚠️ **Note**: .env files are intentionally not committed to the repository. Reference files `.env.example` are provided in both frontend and backend.
+
+---
+
+## 📋 Prerequisites
+
+Before running the project, ensure you have the following installed:
+
+- **Node.js** (version 16 or higher)
+- **MongoDB** (local installation or cloud service like MongoDB Atlas)
+- **npm** or **yarn** package manager
 
 ---
 
@@ -139,7 +178,7 @@ Frontend will run at: **http://localhost:5173**
 
 ## 🎥 Demo Video
 
-A 2-minute Loom video demonstrating:
+A Loom video demonstrating:
 
 - Login / Register
 - Creating a gig
@@ -147,14 +186,26 @@ A 2-minute Loom video demonstrating:
 - Hiring a freelancer
 - Real-time notification
 
-📎 (Loom link to be attached)
+📎 ([Video-link 1.5x preferred](https://www.loom.com/share/b9cc97c7fe8347c78a114c20a9f6ceb4))
 
 ---
 
 ## 🌍 Live Deployment
 
-- **Frontend**: (Live URL to be added)
-- **Backend**: (Live API URL to be added)
+- **Frontend**: (https://gig-flow-wine.vercel.app/)
+- **Backend**: (https://gigflow-nywe.onrender.com)
+
+---
+
+## 🤝 Contributing
+
+Contributions are welcome! Please follow these steps:
+
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
 
 ---
 
