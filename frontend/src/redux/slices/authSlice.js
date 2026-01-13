@@ -46,7 +46,7 @@ export const fetchMe = createAsyncThunk(
 export const logoutUser = createAsyncThunk(
   "auth/logout",
   async () => {
-    await api.post("/auth/logout");
+    await api.post("/api/auth/logout", {}, { withCredentials: true });
   }
 );
 
