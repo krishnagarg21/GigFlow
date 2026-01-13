@@ -6,7 +6,7 @@ export const fetchGigs = createAsyncThunk(
   "gigs/fetch",
   async (_, thunkAPI) => {
     try {
-      const res = await api.get("/gigs");
+      const res = await api.get("/api/gigs");
       return res.data;
     } catch {
       return thunkAPI.rejectWithValue("Failed to fetch gigs");
@@ -19,7 +19,7 @@ export const createGig = createAsyncThunk(
   "gigs/create",
   async (gigData, thunkAPI) => {
     try {
-      const res = await api.post("/gigs", gigData);
+      const res = await api.post("/api/gigs", gigData);
       return res.data;
     } catch {
       return thunkAPI.rejectWithValue("Failed to create gig");
